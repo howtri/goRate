@@ -16,6 +16,7 @@ import (
 func AddSkillHandler(c *gin.Context) {
 	skillItem, statusCode, err := convertHTTPBodyToSkill(c.Request.Body)
 	if err != nil {
+		log.Printf("err %s", err)
 		c.JSON(statusCode, err)
 		return
 	}
@@ -42,9 +43,7 @@ func RankSkillHandler(c *gin.Context) {
 		c.JSON(statusCode, err)
 		return
 	}
-	log.Printf("Calling rank")
 	database.RankSkill(skillItem)
-	log.Printf("Finished")
 	c.JSON(http.StatusOK, "")
 }
 
@@ -68,6 +67,7 @@ func convertJSONBodyToSkill(jsonBody []byte) (database.Skill, int, error) {
 
 func convertHTTPBodyToRanking(httpBody io.ReadCloser) (skills.Ranking, int, error) {
 	body, err := ioutil.ReadAll(httpBody)
+
 	if err != nil {
 		return skills.Ranking{}, http.StatusInternalServerError, err
 	}

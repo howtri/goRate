@@ -91,7 +91,7 @@ func GetSkill(id string) Skill {
 
 func SearchSkills(s Skill) []Skill {
 	svc := initDynamo()
-	proj := expression.NamesList(expression.Name("id"), expression.Name("name"), expression.Name("rankings"))
+	proj := expression.NamesList(expression.Name("id"), expression.Name("name"), expression.Name("rankings2"))
 	expr, err := expression.NewBuilder().WithProjection(proj).Build()
 	if err != nil {
 		log.Fatalf("Got error building expression: %s", err)
@@ -114,7 +114,6 @@ func SearchSkills(s Skill) []Skill {
 	for _, v := range result.Items {
 		item := Skill{}
 		err = dynamodbattribute.UnmarshalMap(v, &item)
-
 		if err != nil {
 			log.Fatalf("Got error unmarshalling: %s", err)
 		}
@@ -134,7 +133,6 @@ func RankSkill(s Skill) {
 
 	var qids []*dynamodb.AttributeValue
 	qids = append(qids, av)
-	log.Printf("For the id %s", s.ID)
 	input := &dynamodb.UpdateItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
